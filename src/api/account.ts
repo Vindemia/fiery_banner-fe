@@ -1,3 +1,4 @@
+import Cookies from "js-cookie";
 import api from "./axiosInstance";
 import {
   isLoggedIn,
@@ -11,38 +12,66 @@ interface logIn {
   password: string;
 }
 
+type UserType = "ADMIN" | "USER";
+
 interface userData {
   username: string;
   characterList: Array<string>;
-  userType: string;
+  userType: UserType;
+  isLoggedIn: boolean;
 }
 
 const logSuccess = (userData: userData) => {
-  isLoggedIn.set(true);
-  username.set(userData.username);
-  characterList.set(userData.characterList);
-  userType.set(userData.userType);
-  const obj = {
-    isLoggedIn: true,
-    username: userData.username,
-    characterList: userData.characterList,
-    userType: userData.userType,
-  };
-  localStorage.setItem("user", JSON.stringify(obj));
+  try {
+    isLoggedIn.set(true);
+    username.set(userData.username);
+    characterList.set(userData.characterList);
+    userType.set(userData.userType);
+    const updatedUserData = { ...userData, isLoggedIn: true };
+    Cookies.set("user", JSON.stringify(updatedUserData));
+  } catch (error) {
+    console.error(`Error while updating context at loggin sucess`, error);
+  }
 };
 
 const register = async (data: logIn) => {
-  const response = await api.post("/register", data);
-  console.log(response.data);
-  if (response.data.loginValide) logSuccess(response.data.user);
-  return response.data.loginValide;
+  try {
+    const response = await api.post("/register", data);
+    console.log(response.data);
+    if (response.data.loginValide) logSuccess(response.data.user);
+    return response.data.loginValide;
+  } catch (error) {
+    console.error(`Error while register new user`, error);
+  }
 };
 
 const login = async (data: logIn) => {
-  const response = await api.post("/login", data);
-  console.log(response.data);
-  if (response.data.loginValide) logSuccess(response.data.user);
-  return response.data.loginValide;
+  try {
+    const response = await api.post("/login", data);
+    console.log(response.data);
+    if (response.data.loginValide) logSuccess(response.data.user);
+    return response.data.loginValide;
+  } catch (error) {
+    console.error(`Error while loggin user`, error);
+  }
 };
 
-export { register, login };
+const logout = () => {
+  try {
+    // remove cookies
+    Cookies.remove("isLoggedIn");
+    Cookies.remove("username");
+    Cookies.remove("characterList");
+    Cookies.remove("userType");
+
+    // clear store values
+    isLoggedIn.set(false);
+    username.set("");
+    characterList.set([]);
+    userType.set("");
+  } catch (error) {
+    console.error("Error while logging out user", error);
+  }
+};
+
+export { register, login, logout };

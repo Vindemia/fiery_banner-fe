@@ -1,15 +1,15 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { getCharacterById } from "../api/characters";
-  import { useParams } from "svelte-navigator";
+  import { useParams, navigate } from "svelte-navigator";
   import { getAllSkills } from "../api/skills";
   import Modal from "../components/modal.svelte";
   import Table from "../components/table.svelte";
   import Input from "../components/input.svelte";
   import Skill from "../components/skills.svelte";
+  import CloseIcon from "../components/CloseIcon.svelte";
 
   const pathOptions = useParams();
-  $: console.log($pathOptions.id);
 
   let isModalOpen = false;
   let characterDetails = {
@@ -22,21 +22,20 @@
     skills: [""],
   };
   let allSkills = [];
+  let selectedSkillId = null;
 
-  const getCharDetails = async () => {
-    characterDetails = await getCharacterById($pathOptions.id);
-    console.log(characterDetails);
-  };
+  $: ownedSkill = allSkills.filter((skill) =>
+    characterDetails.skills.includes(skill._id)
+  );
 
-  const getSkills = async () => {
+  $: availableSkill = allSkills.filter(
+    (skill) => !characterDetails.skills.includes(skill._id)
+  );
+
+  onMount(async () => {
     const skills = await getAllSkills();
-    console.log(skills);
-    allSkills.push(...skills);
-  };
-
-  onMount(() => {
-    getSkills();
-    getCharDetails();
+    characterDetails = await getCharacterById($pathOptions.id);
+    allSkills = [...skills];
   });
 
   const hxpHeader = ["Séance", "XP Obtenue"];
@@ -49,13 +48,31 @@
     ["08/02/2023", "Survivant", "2", "2"],
     ["08/02/2023", "Voltigeur", "1", "1"],
   ];
+
+  const handleSkillSelection = (skill) => {
+    console.log("handleSkillSelection", skill.detail);
+    selectedSkillId = skill.detail;
+  };
+
+  function addSkill() {
+    if (selectedSkillId) {
+      characterDetails.skills = [...characterDetails.skills, selectedSkillId];
+    }
+    isModalOpen = false;
+  }
 </script>
 
 <characterSheet class="container">
   <!-- Fiche de personnage -->
   <div
-    class="container m-2 mx-auto rounded-lg border border-slate-200 p-4 shadow-2xl"
+    class="container relative m-2 mx-auto rounded-lg border border-gray-300 p-4 shadow-2xl"
   >
+    <button
+      class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+      on:click={() => navigate("/characters")}
+    >
+      <CloseIcon />
+    </button>
     <!-- Bloc nom clan xp xp restant pv armure -->
     <div class="grid grid-cols-2 gap-4">
       <Input
@@ -109,35 +126,38 @@
       <div class="m-2 flex justify-between p-2">
         <h2>Compétences</h2>
         <button
-          class="rounded-lg border-2 border-red-600 bg-red-50 p-2 font-medium"
+          class="rounded-lg border-2 border-blue-600 bg-blue-50 p-2 font-medium"
           on:click={() => (isModalOpen = !isModalOpen)}>Add skills</button
         >
       </div>
-      <Skill
-        skillList={allSkills.filter((skill) =>
-          characterDetails.skills.includes(skill._id)
-        )}
-      />
+      <Skill skillList={ownedSkill} />
     </div>
     <!-- historique xp -->
     <div>
       <h2>Historique XP</h2>
-      <Table head={hxpHeader} rows={hxpRows} />
+      <Table tableHeaders={hxpHeader} tableRows={hxpRows} />
       <div />
       <!-- historique défis -->
       <div>
         <h2>Historiques Défis</h2>
-        <Table head={hchHeader} rows={hchRows} />
+        <Table tableHeaders={hchHeader} tableRows={hchRows} />
         <div />
       </div>
 
       {#if isModalOpen}
         <Modal closeModal={() => (isModalOpen = false)}>
-          <Skill
-            skillList={allSkills.filter(
-              (skill) => !characterDetails.skills.includes(skill._id)
-            )}
-          />
+          <div>
+            <Skill
+              on:skillSelected={handleSkillSelection}
+              skillList={availableSkill}
+            />
+            <button
+              on:click={addSkill}
+              class="mt-4 rounded bg-blue-600 px-4 py-2 text-white"
+            >
+              Add Skill
+            </button>
+          </div>
         </Modal>
       {/if}
     </div>

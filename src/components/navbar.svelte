@@ -1,9 +1,10 @@
 <script lang="ts">
   import { username, userType, isLoggedIn } from "../stores/userStore";
   import { navigate, Link } from "svelte-navigator";
+  import { logout } from "../api/account";
 
   const handleDisconnect = () => {
-    localStorage.removeItem("user");
+    logout();
     $isLoggedIn = false;
     navigate("/login");
   };

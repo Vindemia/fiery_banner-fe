@@ -59,11 +59,8 @@ const login = async (data: logIn) => {
 const logout = () => {
   try {
     // remove cookies
-    Cookies.remove("isLoggedIn");
-    Cookies.remove("username");
-    Cookies.remove("characterList");
-    Cookies.remove("userType");
-
+    console.log("delete cookie");
+    Cookies.remove("user");
     // clear store values
     isLoggedIn.set(false);
     username.set("");

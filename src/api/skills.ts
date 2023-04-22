@@ -9,12 +9,12 @@ const getAllSkills = async () => {
   }
 };
 
-const createSkill = async (id, data) => {
+const createSkill = async (data) => {
   try {
-    const response = await api.post(`/skill/`, data);
+    const response = await api.post(`/skill`, data);
     return response.data;
   } catch (error) {
-    console.error(`Error while creating a skill with id:  ${id}`, error);
+    console.error(`Error while creating a skill`, error);
   }
 };
 

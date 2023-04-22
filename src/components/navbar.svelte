@@ -1,40 +1,60 @@
 <script lang="ts">
   import { username, userType, isLoggedIn } from "../stores/userStore";
   import { navigate, Link } from "svelte-navigator";
-  import { logout } from "../api/account";
 
   const handleDisconnect = () => {
-    logout();
+    localStorage.removeItem("user");
     $isLoggedIn = false;
     navigate("/login");
   };
 </script>
 
 <nav class="bg-slate-800 text-white">
-  <ul class="flex items-center justify-between p-2">
-    <li class="font-bold hover:text-white">{$username}</li>
+  <ul class="flex justify-between p-2">
+    <li class="font-bold text-gray-700 hover:text-white">{$username}</li>
     {#if $userType === "ADMIN"}
-      <li>
-        <Link
-          class="rounded-md px-4 py-2 text-sm font-medium transition-colors duration-200 ease-in-out hover:bg-white hover:bg-opacity-10 focus:bg-white focus:bg-opacity-10 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 focus:ring-offset-2"
-          to="/admin"
+      <li class="group relative">
+        <span
+          class="cursor-pointer px-4 py-2 transition-colors duration-200 ease-in-out hover:bg-white hover:bg-opacity-10 focus:bg-white focus:bg-opacity-10"
         >
           ADMIN
-        </Link>
+        </span>
+        <div
+          class="absolute left-0 mt-2 hidden w-48 rounded bg-slate-800 text-white shadow-md group-hover:block"
+        >
+          <a
+            href="/admin/skills"
+            class="block whitespace-nowrap px-4 py-2 text-sm transition-colors duration-200 ease-in-out hover:bg-white hover:bg-opacity-10 focus:bg-white focus:bg-opacity-10"
+          >
+            Skill editor
+          </a>
+          <a
+            href="/admin/stats"
+            class="block whitespace-nowrap px-4 py-2 text-sm transition-colors duration-200 ease-in-out hover:bg-white hover:bg-opacity-10 focus:bg-white focus:bg-opacity-10"
+          >
+            Stats
+          </a>
+          <a
+            href="/admin/sessions"
+            class="block whitespace-nowrap px-4 py-2 text-sm transition-colors duration-200 ease-in-out hover:bg-white hover:bg-opacity-10 focus:bg-white focus:bg-opacity-10"
+          >
+            Session
+          </a>
+        </div>
       </li>
     {/if}
     <li>
       <Link
-        class="rounded-md px-4 py-2 text-sm font-medium transition-colors duration-200 ease-in-out hover:bg-white hover:bg-opacity-10 focus:bg-white focus:bg-opacity-10 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 focus:ring-offset-2"
         to="/characters"
+        class="nav-link px-4 py-2 transition-colors duration-200 ease-in-out hover:bg-white hover:bg-opacity-10 focus:bg-white focus:bg-opacity-10"
       >
         List des Personnages
       </Link>
     </li>
-    {#if $isLoggedIn}
+    {#if isLoggedIn}
       <li>
         <button
-          class="rounded-md px-4 py-2 text-sm font-medium transition-colors duration-200 ease-in-out hover:bg-white hover:bg-opacity-10 focus:bg-white focus:bg-opacity-10 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 focus:ring-offset-2"
+          class="nav-link px-4 py-2 transition-colors duration-200 ease-in-out hover:bg-white hover:bg-opacity-10 focus:bg-white focus:bg-opacity-10 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2"
           on:click={handleDisconnect}
         >
           Déconnecter

@@ -9,12 +9,21 @@ const getAllSkills = async () => {
   }
 };
 
+const createSkill = async (id, data) => {
+  try {
+    const response = await api.post(`/skill/`, data);
+    return response.data;
+  } catch (error) {
+    console.error(`Error while creating a skill with id:  ${id}`, error);
+  }
+};
+
 const updateSkill = async (id, data) => {
   try {
     const response = await api.put(`/skill/${id}`, data);
     return response.data;
   } catch (error) {
-    console.error(`Error while updating skills with id:  ${id}`, error);
+    console.error(`Error while updating skill with id:  ${id}`, error);
   }
 };
 
@@ -23,8 +32,8 @@ const deleteSkill = async (id) => {
     const response = await api.delete(`/skill/${id}`);
     return response.data;
   } catch (error) {
-    console.error(`Error while deleting skills with id: ${id}`, error);
+    console.error(`Error while deleting skill with id: ${id}`, error);
   }
 };
 
-export { getAllSkills, updateSkill, deleteSkill };
+export { getAllSkills, updateSkill, deleteSkill, createSkill };

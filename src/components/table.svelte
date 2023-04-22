@@ -1,9 +1,16 @@
 <script lang="ts">
+  import { createEventDispatcher } from "svelte";
   export let tableHeaders: Array<string> = [];
   export let tableRows: Array<Array<string | number>> = [[]];
-  export let rowAction: Function = null;
+  export let rowAction: boolean = false;
 
   const hoverClass = " hover:cursor-pointer";
+
+  const dispatch = createEventDispatcher();
+
+  function handleClickRow(row) {
+    dispatch("rowAction", row);
+  }
 </script>
 
 <customTable>
@@ -35,9 +42,9 @@
               {#each tableRows as row, index}
                 <tr
                   class={`border-b odd:bg-slate-200 even:bg-slate-100 ${
-                    rowAction !== null && hoverClass
+                    rowAction && hoverClass
                   }`}
-                  on:click={() => rowAction && rowAction()}
+                  on:click={() => handleClickRow(row)}
                 >
                   <td
                     class="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900"

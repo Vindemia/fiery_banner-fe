@@ -5,7 +5,7 @@
   import CharacterSheet from "./pages/CharacterSheet.svelte";
   import Navbar from "./components/navbar.svelte";
   import CharacterList from "./pages/CharacterList.svelte";
-  import AdminSkill from "./pages/admin/skills.svelte";
+  import skillEditor from "./pages/admin/skillEditor.svelte";
   import Cookies from "js-cookie";
   import {
     isLoggedIn,
@@ -52,10 +52,9 @@
       <Route path="/characters" component={CharacterList} />
       <Route path="/character/edit/:id" component={CharacterSheet} />
       {#if $userType === "ADMIN"}
-        <Route path="/admin" component={AdminSkill} />
-        <Route path="/admin/skills" />
-        <Route path="/admin/sessions" />
-        <Route path="/admin/newsession" />
+        <Route path="/admin/skills" component={skillEditor} />
+        <Route path="/admin/sessions" component={skillEditor} />
+        <Route path="/admin/stats" component={skillEditor} />
       {/if}
     {/if}
     <Route path="/" let:params>

@@ -5,6 +5,7 @@ import {
   username,
   characterList,
   userType,
+  userId,
 } from "../stores/userStore";
 
 interface logIn {
@@ -19,6 +20,7 @@ interface userData {
   characterList: Array<string>;
   userType: UserType;
   isLoggedIn: boolean;
+  _id: string;
 }
 
 const logSuccess = (userData: userData) => {
@@ -27,6 +29,7 @@ const logSuccess = (userData: userData) => {
     username.set(userData.username);
     characterList.set(userData.characterList);
     userType.set(userData.userType);
+    userId.set(userData._id);
     const updatedUserData = { ...userData, isLoggedIn: true };
     Cookies.set("user", JSON.stringify(updatedUserData));
   } catch (error) {
@@ -66,6 +69,7 @@ const logout = () => {
     username.set("");
     characterList.set([]);
     userType.set("");
+    userId.set("");
   } catch (error) {
     console.error("Error while logging out user", error);
   }

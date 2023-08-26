@@ -1,8 +1,8 @@
 import api from "./axiosInstance";
 
-const getAllSkills = async () => {
+const getAllSkills = async (clanFilter) => {
   try {
-    const response = await api.get("/skills");
+    const response = await api.get(`/skills`, { params: { clan: clanFilter } });
     return response.data;
   } catch (error) {
     console.error("Error while getting skills list", error);

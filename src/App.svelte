@@ -3,15 +3,18 @@
   import { Router, Route, navigate } from "svelte-navigator";
   import Login from "./pages/Login.svelte";
   import CharacterSheet from "./pages/CharacterSheet.svelte";
+  import CharacterForm from "./pages/CharacterForm.svelte";
   import Navbar from "./components/navbar.svelte";
   import CharacterList from "./pages/CharacterList.svelte";
   import skillEditor from "./pages/admin/skillEditor.svelte";
+  import NewSession from "./pages/admin/NewSession.svelte";
   import Cookies from "js-cookie";
   import {
     isLoggedIn,
     characterList,
     userType,
     username,
+    userId,
   } from "./stores/userStore";
 
   interface UserData {
@@ -35,6 +38,7 @@
       characterList.set(userData.characterList);
       userType.set(userData.userType);
       username.set(userData.username);
+      userId.set(userData._id);
     } else {
       console.log("navigate ?");
       navigate("/login");
@@ -51,9 +55,10 @@
       <Navbar />
       <Route path="/characters" component={CharacterList} />
       <Route path="/character/edit/:id" component={CharacterSheet} />
+      <Route path="/character/create" component={CharacterForm} />
       {#if $userType === "ADMIN"}
         <Route path="/admin/skills" component={skillEditor} />
-        <Route path="/admin/sessions" component={skillEditor} />
+        <Route path="/admin/newSession" component={NewSession} />
         <Route path="/admin/stats" component={skillEditor} />
       {/if}
     {/if}

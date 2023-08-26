@@ -33,7 +33,7 @@
   );
 
   onMount(async () => {
-    const skills = await getAllSkills();
+    const skills = await getAllSkills(characterDetails.clan);
     characterDetails = await getCharacterById($pathOptions.id);
     allSkills = [...skills];
   });
